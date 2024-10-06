@@ -1,7 +1,7 @@
 import BookModel from "../../Models/BookModel";
 import { Link } from "react-router-dom";
 
-export const CheckoutAndReviewBox: React.FC<{ book: BookModel | undefined, mobile: boolean }> = (props) => {
+export const CheckoutAndReviewBox: React.FC<{ book: BookModel | undefined, mobile: boolean, currentLoansCount: number }> = (props) => {
     // @ts-ignore
     // @ts-ignore
     return (
@@ -9,7 +9,7 @@ export const CheckoutAndReviewBox: React.FC<{ book: BookModel | undefined, mobil
             <div className='card-body container'>
                 <div className='mt-3'>
                     <p>
-                        <b>0/5</b> books checked out
+                        <b>{props.currentLoansCount}/5</b> books checked out
                     </p>
                     <hr />
                     {props.book && props.book.copiesAvailable && props.book.copiesAvailable > 0 ?
