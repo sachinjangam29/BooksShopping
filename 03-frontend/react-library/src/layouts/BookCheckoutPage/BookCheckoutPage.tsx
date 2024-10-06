@@ -61,7 +61,7 @@ export const BookCheckoutPage = () => {
             }
         };
         fetchBook();
-    }, [bookId]);
+    }, [isCheckedOut]);
 
     // Review UseEffect
     useEffect(() => {
@@ -131,7 +131,7 @@ export const BookCheckoutPage = () => {
             setIsLoadingCurrentLoansCount(false);
             setHttpError(error.message);
         })
-    }, [authState]);
+    }, [authState, isCheckedOut]);
 
     useEffect(() => {
         const fetchUserCheckedOutBook = async () => {
@@ -173,6 +173,22 @@ export const BookCheckoutPage = () => {
         );
     }
 
+    async function checkoutBook() {
+        const url = `Http://localhost:8078/api/books/secure/checkout/?bookId=${book?.id}`;
+        const requestOptions = {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        };
+        const checkoutResponse = await fetch(url, requestOptions);
+        if (!checkoutResponse.ok) {
+            throw new Error('Something went wrong!');
+        }
+        setIsCheckedOut(true);
+    }
+
     return (
         <div>
             <div className='container d-none d-lg-block'>
@@ -197,7 +213,9 @@ export const BookCheckoutPage = () => {
                             <StarReview rating={totalStars} size={32}/>
                         </div>
                     </div>
-                    <CheckoutAndReviewBox book={book} mobile={false} currentLoansCount={currentLoansCount}/>
+                    <CheckoutAndReviewBox book={book} mobile={false} currentLoansCount={currentLoansCount}
+                                          isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut}
+                                          checkoutBook={checkoutBook}/>
                 </div>
                 <hr/>
                 <LatestReview reviews={reviews} bookId={book?.id} mobile={false}/>
@@ -223,7 +241,9 @@ export const BookCheckoutPage = () => {
                         <StarReview rating={totalStars} size={32}/>
                     </div>
                 </div>
-                <CheckoutAndReviewBox book={book} mobile={true} currentLoansCount={currentLoansCount}/>
+                <CheckoutAndReviewBox book={book} mobile={true} currentLoansCount={currentLoansCount}
+                                      isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut}
+                                      checkoutBook={checkoutBook}/>
                 <hr/>
                 <LatestReview reviews={reviews} bookId={book?.id} mobile={true}/>
             </div>
